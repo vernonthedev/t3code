@@ -6,21 +6,21 @@ packages:
   - scripts
 
 catalog:
-  '@effect/atom-react': 4.0.0-beta.78
-  '@effect/openapi-generator': 4.0.0-beta.78
-  '@effect/platform-bun': 4.0.0-beta.78
-  '@effect/platform-node': 4.0.0-beta.78
-  '@effect/platform-node-shared': 4.0.0-beta.78
-  '@effect/sql-pg': 4.0.0-beta.78
-  '@effect/sql-sqlite-bun': 4.0.0-beta.78
-  '@effect/tsgo': 0.13.2
-  '@effect/vitest': 4.0.0-beta.78
-  '@noble/curves': 1.9.1
-  '@noble/hashes': 1.8.0
-  '@pierre/diffs': 1.1.20
-  '@types/node': 24.12.4
-  '@typescript/native-preview': 7.0.0-dev.20260604.1
-  '@vitest/runner': 4.1.8
+  "@effect/atom-react": 4.0.0-beta.78
+  "@effect/openapi-generator": 4.0.0-beta.78
+  "@effect/platform-bun": 4.0.0-beta.78
+  "@effect/platform-node": 4.0.0-beta.78
+  "@effect/platform-node-shared": 4.0.0-beta.78
+  "@effect/sql-pg": 4.0.0-beta.78
+  "@effect/sql-sqlite-bun": 4.0.0-beta.78
+  "@effect/tsgo": 0.13.2
+  "@effect/vitest": 4.0.0-beta.78
+  "@noble/curves": 1.9.1
+  "@noble/hashes": 1.8.0
+  "@pierre/diffs": 1.1.20
+  "@types/node": 24.12.4
+  "@typescript/native-preview": 7.0.0-dev.20260604.1
+  "@vitest/runner": 4.1.8
   effect: 4.0.0-beta.78
   jose: 6.2.2
   typescript: ~6.0.3
@@ -46,43 +46,43 @@ onlyBuiltDependencies:
   - workerd
 
 overrides:
-  '@clerk/clerk-js>@base-org/account': '-'
-  '@clerk/clerk-js>@coinbase/wallet-sdk': '-'
-  '@clerk/clerk-js>@solana/wallet-adapter-base': '-'
-  '@clerk/clerk-js>@solana/wallet-adapter-react': '-'
-  '@clerk/clerk-js>@solana/wallet-standard': '-'
-  '@clerk/clerk-js>@wallet-standard/core': '-'
-  '@effect/atom-react': 'catalog:'
-  '@effect/platform-bun': 'catalog:'
-  '@effect/platform-node': 'catalog:'
-  '@effect/platform-node-shared': 'catalog:'
-  '@effect/sql-pg': 'catalog:'
-  '@effect/sql-sqlite-bun': 'catalog:'
-  '@effect/vitest': 'catalog:'
-  '@effect/vitest>@vitest/runner': '-'
-  '@effect/vitest>vitest': '-'
-  '@expo/metro-config': 56.0.13
-  '@types/node': 'catalog:'
-  effect: 'catalog:'
-  vite: 'catalog:'
-  vitest: 'catalog:'
-  yaml: 'catalog:'
+  "@clerk/clerk-js>@base-org/account": "-"
+  "@clerk/clerk-js>@coinbase/wallet-sdk": "-"
+  "@clerk/clerk-js>@solana/wallet-adapter-base": "-"
+  "@clerk/clerk-js>@solana/wallet-adapter-react": "-"
+  "@clerk/clerk-js>@solana/wallet-standard": "-"
+  "@clerk/clerk-js>@wallet-standard/core": "-"
+  "@effect/atom-react": "catalog:"
+  "@effect/platform-bun": "catalog:"
+  "@effect/platform-node": "catalog:"
+  "@effect/platform-node-shared": "catalog:"
+  "@effect/sql-pg": "catalog:"
+  "@effect/sql-sqlite-bun": "catalog:"
+  "@effect/vitest": "catalog:"
+  "@effect/vitest>@vitest/runner": "-"
+  "@effect/vitest>vitest": "-"
+  "@expo/metro-config": 56.0.13
+  "@types/node": "catalog:"
+  effect: "catalog:"
+  vite: "catalog:"
+  vitest: "catalog:"
+  yaml: "catalog:"
 
 packageExtensions:
-  '@effect/vitest@*':
+  "@effect/vitest@*":
     dependencies:
-      vite-plus: 'catalog:'
+      vite-plus: "catalog:"
     peerDependenciesMeta:
       vitest:
         optional: true
   vite-plus@*:
     dependencies:
-      vite: 'catalog:'
+      vite: "catalog:"
 
 peerDependencyRules:
   allowAny:
     - vite
     - vitest
   allowedVersions:
-    vite: '*'
-    vitest: '*'
+    vite: "*"
+    vitest: "*"
