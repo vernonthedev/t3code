@@ -186,7 +186,7 @@ function SkillRow({
             </MenuGroup>
             <MenuSeparator />
             <MenuGroup>
-              <MenuItem onClick={onUpdate}>
+              <MenuItem disabled={skill.provider !== "skills.sh"} onClick={onUpdate}>
                 <RefreshCwIcon />
                 Update skill
               </MenuItem>
