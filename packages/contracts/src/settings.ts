@@ -6,6 +6,7 @@ import { TrimmedNonEmptyString, TrimmedString } from "./baseSchemas.ts";
 import { DEFAULT_GIT_TEXT_GENERATION_MODEL, ProviderOptionSelections } from "./model.ts";
 import { ModelSelection } from "./orchestration.ts";
 import { ProviderInstanceConfig, ProviderInstanceId } from "./providerInstance.ts";
+import { SkillId, SkillPermission, SkillProviderKind } from "./skills.ts";
 
 // ── Client Settings (local-only) ───────────────────────────────
 
@@ -361,6 +362,27 @@ export const ObservabilitySettings = Schema.Struct({
 });
 export type ObservabilitySettings = typeof ObservabilitySettings.Type;
 
+export const InstalledSkillSettings = Schema.Struct({
+  enabled: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(true))),
+  provider: SkillProviderKind,
+  version: TrimmedNonEmptyString.pipe(Schema.withDecodingDefault(Effect.succeed("0.1.0"))),
+  permissions: Schema.Array(SkillPermission).pipe(Schema.withDecodingDefault(Effect.succeed([]))),
+  installPath: TrimmedString.pipe(Schema.withDecodingDefault(Effect.succeed(""))),
+  sourceUrl: TrimmedString.pipe(Schema.withDecodingDefault(Effect.succeed(""))),
+});
+export type InstalledSkillSettings = typeof InstalledSkillSettings.Type;
+
+export const SkillsSettings = Schema.Struct({
+  installPath: TrimmedString.pipe(Schema.withDecodingDefault(Effect.succeed(""))),
+  installed: Schema.Record(SkillId, InstalledSkillSettings).pipe(
+    Schema.withDecodingDefault(Effect.succeed({})),
+  ),
+  grantedPermissions: Schema.Record(SkillId, Schema.Array(SkillPermission)).pipe(
+    Schema.withDecodingDefault(Effect.succeed({})),
+  ),
+});
+export type SkillsSettings = typeof SkillsSettings.Type;
+
 export const DEFAULT_AUTOMATIC_GIT_FETCH_INTERVAL = Duration.seconds(30);
 
 export const ServerSettings = Schema.Struct({
@@ -405,6 +427,7 @@ export const ServerSettings = Schema.Struct({
     Schema.withDecodingDefault(Effect.succeed({})),
   ),
   observability: ObservabilitySettings.pipe(Schema.withDecodingDefault(Effect.succeed({}))),
+  skills: SkillsSettings.pipe(Schema.withDecodingDefault(Effect.succeed({}))),
 });
 export type ServerSettings = typeof ServerSettings.Type;
 
@@ -476,6 +499,21 @@ const OpenCodeSettingsPatch = Schema.Struct({
   customModels: Schema.optionalKey(Schema.Array(Schema.String)),
 });
 
+const InstalledSkillSettingsPatch = Schema.Struct({
+  enabled: Schema.optionalKey(Schema.Boolean),
+  provider: Schema.optionalKey(SkillProviderKind),
+  version: Schema.optionalKey(TrimmedNonEmptyString),
+  permissions: Schema.optionalKey(Schema.Array(SkillPermission)),
+  installPath: Schema.optionalKey(TrimmedString),
+  sourceUrl: Schema.optionalKey(TrimmedString),
+});
+
+const SkillsSettingsPatch = Schema.Struct({
+  installPath: Schema.optionalKey(TrimmedString),
+  installed: Schema.optionalKey(Schema.Record(SkillId, InstalledSkillSettingsPatch)),
+  grantedPermissions: Schema.optionalKey(Schema.Record(SkillId, Schema.Array(SkillPermission))),
+});
+
 export const ServerSettingsPatch = Schema.Struct({
   // Server settings
   enableAssistantStreaming: Schema.optionalKey(Schema.Boolean),
@@ -489,6 +527,7 @@ export const ServerSettingsPatch = Schema.Struct({
       otlpMetricsUrl: Schema.optionalKey(TrimmedString),
     }),
   ),
+  skills: Schema.optionalKey(SkillsSettingsPatch),
   providers: Schema.optionalKey(
     Schema.Struct({
       codex: Schema.optionalKey(CodexSettingsPatch),
