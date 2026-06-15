@@ -495,6 +495,12 @@ export const SkillRuntimeLive = Layer.effect(
             ),
           } satisfies SkillSearchResult;
         }),
+        Effect.catch((error) =>
+          Effect.succeed({
+            skills: [],
+            warning: error.message,
+          } satisfies SkillSearchResult),
+        ),
       );
 
     const audit = (input: SkillInstallInput) =>
