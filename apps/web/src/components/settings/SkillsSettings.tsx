@@ -486,6 +486,7 @@ export function SkillsSettingsPanel() {
         });
         setAudits((current) => ({ ...current, [skill.id]: result.audit }));
         setView("online");
+        setSearchOpen(false);
         await reload();
       } catch (error) {
         showError("Skill install failed", error);
