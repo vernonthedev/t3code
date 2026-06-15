@@ -598,6 +598,19 @@ export function SkillsSettingsPanel() {
                 ? "Built-in and local skills appear here."
                 : "Install a remote skill from the search dialog to see it here."
             }
+            control={
+              view === "available" ? (
+                <Button size="xs" onClick={() => void navigate({ to: "/settings/skills/create" })}>
+                  <PlusIcon className="size-3.5" />
+                  Create
+                </Button>
+              ) : (
+                <Button size="xs" variant="outline" onClick={() => setSearchOpen(true)}>
+                  <SearchIcon className="size-3.5" />
+                  Search
+                </Button>
+              )
+            }
           />
         ) : (
           visibleSkills.map((skill) => (
