@@ -277,7 +277,7 @@ function SkillSearchDialog({
           <CommandPanel>
             <CommandList>
               {result.warning ? (
-                <div className="border-b px-3 py-2 text-xs text-muted-foreground">
+                <div className="border-b px-3 py-2 text-xs text-muted-foreground" role="status">
                   {result.warning}
                 </div>
               ) : null}
