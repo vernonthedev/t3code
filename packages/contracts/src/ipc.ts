@@ -98,6 +98,20 @@ import { EditorId } from "./editor.ts";
 import { ExecutionEnvironmentDescriptor } from "./environment.ts";
 import type { ClientSettings, ServerSettings, ServerSettingsPatch } from "./settings.ts";
 import type {
+  SkillAuditReport,
+  SkillCreateInput,
+  SkillDefinition,
+  SkillExecuteInput,
+  SkillExecutionRecord,
+  SkillExecutionResult,
+  SkillInstallInput,
+  SkillInstallResult,
+  SkillRegistrySnapshot,
+  SkillSearchInput,
+  SkillSearchResult,
+  SkillSetEnabledInput,
+} from "./skills.ts";
+import type {
   SourceControlCloneRepositoryInput,
   SourceControlCloneRepositoryResult,
   SourceControlDiscoveryResult,
@@ -1075,6 +1089,16 @@ export interface LocalApi {
       input: ServerProcessResourceHistoryInput,
     ) => Promise<ServerProcessResourceHistoryResult>;
     signalProcess: (input: ServerSignalProcessInput) => Promise<ServerSignalProcessResult>;
+  };
+  skills: {
+    list: () => Promise<SkillRegistrySnapshot>;
+    search: (input: SkillSearchInput) => Promise<SkillSearchResult>;
+    audit: (input: SkillInstallInput) => Promise<SkillAuditReport>;
+    install: (input: SkillInstallInput) => Promise<SkillInstallResult>;
+    create: (input: SkillCreateInput) => Promise<SkillDefinition>;
+    setEnabled: (input: SkillSetEnabledInput) => Promise<SkillDefinition>;
+    execute: (input: SkillExecuteInput) => Promise<SkillExecutionResult>;
+    listExecutions: () => Promise<readonly SkillExecutionRecord[]>;
   };
 }
 

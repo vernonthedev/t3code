@@ -164,6 +164,32 @@ function createBrowserLocalApi(rpcClient?: WsRpcClient): LocalApi {
           ? rpcClient.server.signalProcess(input)
           : Promise.reject(unavailableLocalBackendError()),
     },
+    skills: {
+      list: () =>
+        rpcClient ? rpcClient.skills.list() : Promise.reject(unavailableLocalBackendError()),
+      search: (input) =>
+        rpcClient ? rpcClient.skills.search(input) : Promise.reject(unavailableLocalBackendError()),
+      audit: (input) =>
+        rpcClient ? rpcClient.skills.audit(input) : Promise.reject(unavailableLocalBackendError()),
+      install: (input) =>
+        rpcClient
+          ? rpcClient.skills.install(input)
+          : Promise.reject(unavailableLocalBackendError()),
+      create: (input) =>
+        rpcClient ? rpcClient.skills.create(input) : Promise.reject(unavailableLocalBackendError()),
+      setEnabled: (input) =>
+        rpcClient
+          ? rpcClient.skills.setEnabled(input)
+          : Promise.reject(unavailableLocalBackendError()),
+      execute: (input) =>
+        rpcClient
+          ? rpcClient.skills.execute(input)
+          : Promise.reject(unavailableLocalBackendError()),
+      listExecutions: () =>
+        rpcClient
+          ? rpcClient.skills.listExecutions()
+          : Promise.reject(unavailableLocalBackendError()),
+    },
   };
 }
 

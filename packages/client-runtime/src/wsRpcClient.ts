@@ -144,6 +144,16 @@ export interface WsRpcClient {
   readonly review: {
     readonly getDiffPreview: RpcUnaryMethod<typeof WS_METHODS.reviewGetDiffPreview>;
   };
+  readonly skills: {
+    readonly list: RpcUnaryNoArgMethod<typeof WS_METHODS.skillsList>;
+    readonly search: RpcUnaryMethod<typeof WS_METHODS.skillsSearch>;
+    readonly audit: RpcUnaryMethod<typeof WS_METHODS.skillsAudit>;
+    readonly install: RpcUnaryMethod<typeof WS_METHODS.skillsInstall>;
+    readonly create: RpcUnaryMethod<typeof WS_METHODS.skillsCreate>;
+    readonly setEnabled: RpcUnaryMethod<typeof WS_METHODS.skillsSetEnabled>;
+    readonly execute: RpcUnaryMethod<typeof WS_METHODS.skillsExecute>;
+    readonly listExecutions: RpcUnaryNoArgMethod<typeof WS_METHODS.skillsListExecutions>;
+  };
   readonly server: {
     readonly getConfig: RpcUnaryNoArgMethod<typeof WS_METHODS.serverGetConfig>;
     readonly refreshProviders: (
@@ -343,6 +353,18 @@ export function createWsRpcClient(
     review: {
       getDiffPreview: (input) =>
         transport.request((client) => client[WS_METHODS.reviewGetDiffPreview](input)),
+    },
+    skills: {
+      list: () => transport.request((client) => client[WS_METHODS.skillsList]({})),
+      search: (input) => transport.request((client) => client[WS_METHODS.skillsSearch](input)),
+      audit: (input) => transport.request((client) => client[WS_METHODS.skillsAudit](input)),
+      install: (input) => transport.request((client) => client[WS_METHODS.skillsInstall](input)),
+      create: (input) => transport.request((client) => client[WS_METHODS.skillsCreate](input)),
+      setEnabled: (input) =>
+        transport.request((client) => client[WS_METHODS.skillsSetEnabled](input)),
+      execute: (input) => transport.request((client) => client[WS_METHODS.skillsExecute](input)),
+      listExecutions: () =>
+        transport.request((client) => client[WS_METHODS.skillsListExecutions]({})),
     },
     server: {
       getConfig: () => transport.request((client) => client[WS_METHODS.serverGetConfig]({})),
