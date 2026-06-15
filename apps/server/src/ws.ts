@@ -71,6 +71,7 @@ import * as ProviderMaintenanceRunner from "./provider/providerMaintenanceRunner
 import { ServerLifecycleEvents } from "./serverLifecycleEvents.ts";
 import { ServerRuntimeStartup } from "./serverRuntimeStartup.ts";
 import { redactServerSettingsForClient, ServerSettingsService } from "./serverSettings.ts";
+import { SkillRuntime, SkillRuntimeLive } from "./skills/SkillRuntime.ts";
 import { TerminalManager } from "./terminal/Services/Manager.ts";
 import * as PreviewAutomationBroker from "./mcp/PreviewAutomationBroker.ts";
 import * as PreviewManager from "./preview/Manager.ts";
@@ -155,6 +156,14 @@ const RPC_REQUIRED_SCOPE = new Map<string, AuthEnvironmentScope>([
   [WS_METHODS.serverGetProcessDiagnostics, AuthOrchestrationReadScope],
   [WS_METHODS.serverGetProcessResourceHistory, AuthOrchestrationReadScope],
   [WS_METHODS.serverSignalProcess, AuthOrchestrationOperateScope],
+  [WS_METHODS.skillsList, AuthOrchestrationReadScope],
+  [WS_METHODS.skillsSearch, AuthOrchestrationReadScope],
+  [WS_METHODS.skillsAudit, AuthOrchestrationReadScope],
+  [WS_METHODS.skillsInstall, AuthOrchestrationOperateScope],
+  [WS_METHODS.skillsCreate, AuthOrchestrationOperateScope],
+  [WS_METHODS.skillsSetEnabled, AuthOrchestrationOperateScope],
+  [WS_METHODS.skillsExecute, AuthOrchestrationOperateScope],
+  [WS_METHODS.skillsListExecutions, AuthOrchestrationReadScope],
   [WS_METHODS.cloudGetRelayClientStatus, AuthRelayWriteScope],
   [WS_METHODS.cloudInstallRelayClient, AuthRelayWriteScope],
   [WS_METHODS.sourceControlLookupRepository, AuthOrchestrationReadScope],
@@ -289,6 +298,7 @@ const makeWsRpcLayer = (currentSession: AuthenticatedSession) =>
       const processDiagnostics = yield* ProcessDiagnostics.ProcessDiagnostics;
       const processResourceMonitor = yield* ProcessResourceMonitor.ProcessResourceMonitor;
       const relayClient = yield* RelayClient.RelayClient;
+      const skillRuntime = yield* SkillRuntime;
       const authorizationError = (requiredScope: AuthEnvironmentScope) =>
         new EnvironmentAuthorizationError({
           message: `The authenticated token is missing required scope: ${requiredScope}.`,
@@ -1099,6 +1109,38 @@ const makeWsRpcLayer = (currentSession: AuthenticatedSession) =>
           observeRpcEffect(WS_METHODS.serverSignalProcess, processDiagnostics.signal(input), {
             "rpc.aggregate": "server",
           }),
+        [WS_METHODS.skillsList]: (_input) =>
+          observeRpcEffect(WS_METHODS.skillsList, skillRuntime.list, {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsSearch]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsSearch, skillRuntime.search(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsAudit]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsAudit, skillRuntime.audit(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsInstall]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsInstall, skillRuntime.install(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsCreate]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsCreate, skillRuntime.create(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsSetEnabled]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsSetEnabled, skillRuntime.setEnabled(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsExecute]: (input) =>
+          observeRpcEffect(WS_METHODS.skillsExecute, skillRuntime.execute(input), {
+            "rpc.aggregate": "skills",
+          }),
+        [WS_METHODS.skillsListExecutions]: (_input) =>
+          observeRpcEffect(WS_METHODS.skillsListExecutions, skillRuntime.listExecutions, {
+            "rpc.aggregate": "skills",
+          }),
         [WS_METHODS.cloudGetRelayClientStatus]: (_input) =>
           observeRpcEffect(WS_METHODS.cloudGetRelayClientStatus, relayClient.resolve, {
             "rpc.aggregate": "cloud",
@@ -1614,6 +1656,7 @@ export const websocketRpcRouteLayer = Layer.unwrap(
         }).pipe(
           Effect.provide(
             makeWsRpcLayer(session).pipe(
+              Layer.provide(SkillRuntimeLive.pipe(Layer.provide(VcsProcess.layer))),
               Layer.provideMerge(RpcSerialization.layerJson),
               Layer.provide(PreviewAutomationBroker.layer),
               Layer.provide(ProviderMaintenanceRunner.layer),
