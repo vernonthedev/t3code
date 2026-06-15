@@ -566,7 +566,9 @@ export function SkillsSettingsPanel() {
                   type="button"
                   onClick={() => setView(item)}
                 >
-                  {item === "available" ? "Available skills" : "Online skills"}
+                  {item === "available"
+                    ? `Available skills (${availableSkills.length})`
+                    : `Online skills (${onlineSkills.length})`}
                 </button>
               ))}
             </div>
