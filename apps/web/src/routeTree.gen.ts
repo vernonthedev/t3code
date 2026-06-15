@@ -21,6 +21,7 @@ import { Route as SettingsGeneralRouteImport } from './routes/settings.general'
 import { Route as SettingsDiagnosticsRouteImport } from './routes/settings.diagnostics'
 import { Route as SettingsConnectionsRouteImport } from './routes/settings.connections'
 import { Route as SettingsArchivedRouteImport } from './routes/settings.archived'
+import { Route as SettingsSkillsCreateRouteImport } from './routes/settings.skills.create'
 import { Route as ChatDraftDraftIdRouteImport } from './routes/_chat.draft.$draftId'
 import { Route as ChatEnvironmentIdThreadIdRouteImport } from './routes/_chat.$environmentId.$threadId'
 
@@ -83,6 +84,11 @@ const SettingsArchivedRoute = SettingsArchivedRouteImport.update({
   path: '/archived',
   getParentRoute: () => SettingsRoute,
 } as any)
+const SettingsSkillsCreateRoute = SettingsSkillsCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => SettingsSkillsRoute,
+} as any)
 const ChatDraftDraftIdRoute = ChatDraftDraftIdRouteImport.update({
   id: '/draft/$draftId',
   path: '/draft/$draftId',
@@ -105,10 +111,11 @@ export interface FileRoutesByFullPath {
   '/settings/general': typeof SettingsGeneralRoute
   '/settings/keybindings': typeof SettingsKeybindingsRoute
   '/settings/providers': typeof SettingsProvidersRoute
-  '/settings/skills': typeof SettingsSkillsRoute
+  '/settings/skills': typeof SettingsSkillsRouteWithChildren
   '/settings/source-control': typeof SettingsSourceControlRoute
   '/$environmentId/$threadId': typeof ChatEnvironmentIdThreadIdRoute
   '/draft/$draftId': typeof ChatDraftDraftIdRoute
+  '/settings/skills/create': typeof SettingsSkillsCreateRoute
 }
 export interface FileRoutesByTo {
   '/pair': typeof PairRoute
@@ -119,11 +126,12 @@ export interface FileRoutesByTo {
   '/settings/general': typeof SettingsGeneralRoute
   '/settings/keybindings': typeof SettingsKeybindingsRoute
   '/settings/providers': typeof SettingsProvidersRoute
-  '/settings/skills': typeof SettingsSkillsRoute
+  '/settings/skills': typeof SettingsSkillsRouteWithChildren
   '/settings/source-control': typeof SettingsSourceControlRoute
   '/': typeof ChatIndexRoute
   '/$environmentId/$threadId': typeof ChatEnvironmentIdThreadIdRoute
   '/draft/$draftId': typeof ChatDraftDraftIdRoute
+  '/settings/skills/create': typeof SettingsSkillsCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,11 +144,12 @@ export interface FileRoutesById {
   '/settings/general': typeof SettingsGeneralRoute
   '/settings/keybindings': typeof SettingsKeybindingsRoute
   '/settings/providers': typeof SettingsProvidersRoute
-  '/settings/skills': typeof SettingsSkillsRoute
+  '/settings/skills': typeof SettingsSkillsRouteWithChildren
   '/settings/source-control': typeof SettingsSourceControlRoute
   '/_chat/': typeof ChatIndexRoute
   '/_chat/$environmentId/$threadId': typeof ChatEnvironmentIdThreadIdRoute
   '/_chat/draft/$draftId': typeof ChatDraftDraftIdRoute
+  '/settings/skills/create': typeof SettingsSkillsCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/settings/source-control'
     | '/$environmentId/$threadId'
     | '/draft/$draftId'
+    | '/settings/skills/create'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/pair'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$environmentId/$threadId'
     | '/draft/$draftId'
+    | '/settings/skills/create'
   id:
     | '__root__'
     | '/_chat'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/_chat/'
     | '/_chat/$environmentId/$threadId'
     | '/_chat/draft/$draftId'
+    | '/settings/skills/create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -283,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsArchivedRouteImport
       parentRoute: typeof SettingsRoute
     }
+    '/settings/skills/create': {
+      id: '/settings/skills/create'
+      path: '/create'
+      fullPath: '/settings/skills/create'
+      preLoaderRoute: typeof SettingsSkillsCreateRouteImport
+      parentRoute: typeof SettingsSkillsRoute
+    }
     '/_chat/draft/$draftId': {
       id: '/_chat/draft/$draftId'
       path: '/draft/$draftId'
@@ -314,6 +333,18 @@ const ChatRouteChildren: ChatRouteChildren = {
 
 const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 
+interface SettingsSkillsRouteChildren {
+  SettingsSkillsCreateRoute: typeof SettingsSkillsCreateRoute
+}
+
+const SettingsSkillsRouteChildren: SettingsSkillsRouteChildren = {
+  SettingsSkillsCreateRoute: SettingsSkillsCreateRoute,
+}
+
+const SettingsSkillsRouteWithChildren = SettingsSkillsRoute._addFileChildren(
+  SettingsSkillsRouteChildren,
+)
+
 interface SettingsRouteChildren {
   SettingsArchivedRoute: typeof SettingsArchivedRoute
   SettingsConnectionsRoute: typeof SettingsConnectionsRoute
@@ -321,7 +352,7 @@ interface SettingsRouteChildren {
   SettingsGeneralRoute: typeof SettingsGeneralRoute
   SettingsKeybindingsRoute: typeof SettingsKeybindingsRoute
   SettingsProvidersRoute: typeof SettingsProvidersRoute
-  SettingsSkillsRoute: typeof SettingsSkillsRoute
+  SettingsSkillsRoute: typeof SettingsSkillsRouteWithChildren
   SettingsSourceControlRoute: typeof SettingsSourceControlRoute
 }
 
@@ -332,7 +363,7 @@ const SettingsRouteChildren: SettingsRouteChildren = {
   SettingsGeneralRoute: SettingsGeneralRoute,
   SettingsKeybindingsRoute: SettingsKeybindingsRoute,
   SettingsProvidersRoute: SettingsProvidersRoute,
-  SettingsSkillsRoute: SettingsSkillsRoute,
+  SettingsSkillsRoute: SettingsSkillsRouteWithChildren,
   SettingsSourceControlRoute: SettingsSourceControlRoute,
 }
 
