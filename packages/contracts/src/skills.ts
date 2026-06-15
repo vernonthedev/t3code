@@ -39,6 +39,7 @@ export type SkillSearchInput = typeof SkillSearchInput.Type;
 
 export const SkillSearchResult = Schema.Struct({
   skills: Schema.Array(SkillDefinition),
+  warning: Schema.optional(Schema.String),
 });
 export type SkillSearchResult = typeof SkillSearchResult.Type;
 
