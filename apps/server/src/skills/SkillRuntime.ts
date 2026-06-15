@@ -498,7 +498,9 @@ export const SkillRuntimeLive = Layer.effect(
         Effect.catch((error) =>
           Effect.succeed({
             skills: [],
-            warning: error.message,
+            warning: error.message.includes("401")
+              ? "skills.sh search currently requires registry authentication, so online results are unavailable."
+              : error.message,
           } satisfies SkillSearchResult),
         ),
       );
