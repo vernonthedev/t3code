@@ -137,6 +137,16 @@ function SkillRow({
         <span className="flex min-w-0 items-center gap-2">
           <span className="truncate">{skill.name}</span>
           <SkillSourceBadge provider={skill.provider} />
+          <span
+            className={cn(
+              "rounded-md border px-1.5 py-0.5 text-[11px]",
+              skill.enabled
+                ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-700 dark:text-emerald-300"
+                : "bg-muted/40 text-muted-foreground",
+            )}
+          >
+            {skill.enabled ? "Enabled" : "Disabled"}
+          </span>
         </span>
       }
       description={`${skill.id} - v${skill.version}`}
