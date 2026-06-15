@@ -545,10 +545,15 @@ export function SkillsSettingsPanel() {
         title="Skills"
         icon={<SparklesIcon className="size-3.5" />}
         headerAction={
-          <Button size="xs" variant="outline" onClick={() => setSearchOpen(true)}>
-            <SearchIcon className="size-3.5" />
-            Search
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="icon-xs" variant="ghost" aria-label="Refresh skills" onClick={reload}>
+              <RefreshCwIcon className="size-3.5" />
+            </Button>
+            <Button size="xs" variant="outline" onClick={() => setSearchOpen(true)}>
+              <SearchIcon className="size-3.5" />
+              Search
+            </Button>
+          </div>
         }
       >
         <div className="border-t border-border/60 px-4 py-4 first:border-t-0 sm:px-5">
