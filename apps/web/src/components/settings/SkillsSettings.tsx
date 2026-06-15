@@ -299,6 +299,7 @@ function SkillSearchDialog({
                           {skill.description || skill.id}
                         </div>
                         <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                          {installedIds.has(skill.id) ? <span>Installed</span> : null}
                           <AuditStatus audit={audits[skill.id]} />
                           <PermissionList permissions={skill.permissions} />
                         </div>
