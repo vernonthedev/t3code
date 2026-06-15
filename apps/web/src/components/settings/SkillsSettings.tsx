@@ -446,7 +446,9 @@ export function SkillsSettingsPanel() {
   );
   const availableSkills = installedSkills.filter((skill) => skill.provider !== "skills.sh");
   const onlineSkills = installedSkills.filter((skill) => skill.provider === "skills.sh");
-  const visibleSkills = view === "available" ? availableSkills : onlineSkills;
+  const visibleSkills = (view === "available" ? availableSkills : onlineSkills).toSorted(
+    (left, right) => left.name.localeCompare(right.name),
+  );
 
   const reload = useCallback(async () => {
     const api = ensureLocalApi();
