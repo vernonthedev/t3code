@@ -31,6 +31,7 @@ import {
   CommandDialog,
   CommandDialogPopup,
   CommandEmpty,
+  CommandFooter,
   CommandGroup,
   CommandGroupLabel,
   CommandInput,
@@ -317,6 +318,10 @@ function SkillSearchDialog({
               </CommandGroup>
             </CommandList>
           </CommandPanel>
+          <CommandFooter>
+            <span>Search skills.sh</span>
+            <span>Audit before install</span>
+          </CommandFooter>
         </Command>
       </CommandDialogPopup>
     </CommandDialog>
