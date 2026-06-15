@@ -374,6 +374,7 @@ export type InstalledSkillSettings = typeof InstalledSkillSettings.Type;
 
 export const SkillsSettings = Schema.Struct({
   installPath: TrimmedString.pipe(Schema.withDecodingDefault(Effect.succeed(""))),
+  skillsShApiKey: Schema.optional(TrimmedString),
   installed: Schema.Record(SkillId, InstalledSkillSettings).pipe(
     Schema.withDecodingDefault(Effect.succeed({})),
   ),
@@ -510,6 +511,7 @@ const InstalledSkillSettingsPatch = Schema.Struct({
 
 const SkillsSettingsPatch = Schema.Struct({
   installPath: Schema.optionalKey(TrimmedString),
+  skillsShApiKey: Schema.optionalKey(TrimmedString),
   installed: Schema.optionalKey(Schema.Record(SkillId, InstalledSkillSettingsPatch)),
   grantedPermissions: Schema.optionalKey(Schema.Record(SkillId, Schema.Array(SkillPermission))),
 });

@@ -9,6 +9,7 @@ import type {
 } from "@t3tools/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import {
+  BlocksIcon,
   CheckCircle2Icon,
   EllipsisIcon,
   FileCode2Icon,
@@ -17,7 +18,6 @@ import {
   RefreshCwIcon,
   SearchIcon,
   ShieldCheckIcon,
-  SparklesIcon,
   Trash2Icon,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -566,7 +566,7 @@ export function SkillsSettingsPanel() {
     <SettingsPageContainer className="max-w-4xl">
       <SettingsSection
         title="Skills"
-        icon={<SparklesIcon className="size-3.5" />}
+        icon={<BlocksIcon className="size-3.5" />}
         headerAction={
           <div className="flex items-center gap-2">
             <Button size="icon-xs" variant="ghost" aria-label="Refresh skills" onClick={reload}>
@@ -664,6 +664,23 @@ export function SkillsSettingsPanel() {
         />
       </SettingsSection>
 
+      <SettingsSection title="Registry" icon={<ShieldCheckIcon className="size-3.5" />}>
+        <SettingsRow
+          title="skills.sh API key"
+          description="API key for authenticating with the skills.sh registry."
+          control={
+            <DraftInput
+              value={skillsSettings.skillsShApiKey ?? ""}
+              placeholder="sk_..."
+              className="min-w-0 sm:w-96"
+              onCommit={(skillsShApiKey) =>
+                updateSettings({ skills: { ...skillsSettings, skillsShApiKey } })
+              }
+            />
+          }
+        />
+      </SettingsSection>
+
       <SkillSearchDialog
         open={searchOpen}
         installedIds={installedById}
@@ -713,7 +730,7 @@ export function CreateSkillSettingsPanel() {
 
   return (
     <SettingsPageContainer>
-      <SettingsSection title="Create Skill" icon={<SparklesIcon className="size-3.5" />}>
+      <SettingsSection title="Create Skill" icon={<BlocksIcon className="size-3.5" />}>
         <SettingsRow
           title="Skill ID"
           description="Stable identifier used by agents and runtime logs."

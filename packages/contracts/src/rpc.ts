@@ -342,13 +342,13 @@ export const WsSkillsListRpc = Rpc.make(WS_METHODS.skillsList, {
 export const WsSkillsSearchRpc = Rpc.make(WS_METHODS.skillsSearch, {
   payload: SkillSearchInput,
   success: SkillSearchResult,
-  error: Schema.Union([SkillProviderError, EnvironmentAuthorizationError]),
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
 });
 
 export const WsSkillsAuditRpc = Rpc.make(WS_METHODS.skillsAudit, {
   payload: SkillInstallInput,
   success: SkillAuditReport,
-  error: Schema.Union([SkillProviderError, EnvironmentAuthorizationError]),
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
 });
 
 export const WsSkillsInstallRpc = Rpc.make(WS_METHODS.skillsInstall, {

@@ -46,8 +46,10 @@ export interface SkillRuntimeShape {
   readonly list: Effect.Effect<SkillRegistrySnapshot, SkillProviderError | ServerSettingsError>;
   readonly search: (
     input: SkillSearchInput,
-  ) => Effect.Effect<SkillSearchResult, SkillProviderError>;
-  readonly audit: (input: SkillInstallInput) => Effect.Effect<SkillAuditReport, SkillProviderError>;
+  ) => Effect.Effect<SkillSearchResult, SkillProviderError | ServerSettingsError>;
+  readonly audit: (
+    input: SkillInstallInput,
+  ) => Effect.Effect<SkillAuditReport, SkillProviderError | ServerSettingsError>;
   readonly install: (
     input: SkillInstallInput,
   ) => Effect.Effect<SkillInstallResult, SkillProviderError | ServerSettingsError>;
@@ -336,10 +338,15 @@ function makeBuiltins(input: {
 function fetchJson(
   httpClient: HttpClient.HttpClient,
   url: string,
+  apiKey?: string,
 ): Effect.Effect<unknown, SkillProviderError> {
-  return HttpClientRequest.get(url).pipe(
+  let request = HttpClientRequest.get(url).pipe(
     HttpClientRequest.setHeader("accept", "application/json"),
-    httpClient.execute,
+  );
+  if (apiKey) {
+    request = HttpClientRequest.setHeader(request, "authorization", `Bearer ${apiKey}`);
+  }
+  return httpClient.execute(request).pipe(
     Effect.flatMap(HttpClientResponse.filterStatusOk),
     Effect.flatMap((response) => response.text),
     Effect.flatMap((text) =>
@@ -478,32 +485,37 @@ export const SkillRuntimeLive = Layer.effect(
       });
 
     const search = (input: SkillSearchInput) =>
-      fetchJson(
-        httpClient,
-        `${SKILLS_SH_BASE_URL}/api/v1/skills/search?q=${encodeURIComponent(input.query)}`,
-      ).pipe(
-        Effect.map((raw) => {
-          const listRaw =
-            raw && typeof raw === "object" && Array.isArray((raw as { skills?: unknown }).skills)
-              ? (raw as { skills: unknown[] }).skills
-              : Array.isArray(raw)
-                ? raw
-                : [];
-          return {
-            skills: listRaw.map((item, index) =>
-              metadataFromUnknown(item, input.query || `skill-${index + 1}`),
-            ),
-          } satisfies SkillSearchResult;
-        }),
-        Effect.catch((error) =>
-          Effect.succeed({
-            skills: [],
-            warning: error.message.includes("401")
-              ? "skills.sh search currently requires registry authentication, so online results are unavailable."
-              : error.message,
-          } satisfies SkillSearchResult),
-        ),
-      );
+      Effect.gen(function* () {
+        const settings = yield* settingsService.getSettings;
+        const apiKey = settings.skills.skillsShApiKey;
+        return yield* fetchJson(
+          httpClient,
+          `${SKILLS_SH_BASE_URL}/api/v1/skills/search?q=${encodeURIComponent(input.query)}`,
+          apiKey || undefined,
+        ).pipe(
+          Effect.map((raw) => {
+            const listRaw =
+              raw && typeof raw === "object" && Array.isArray((raw as { skills?: unknown }).skills)
+                ? (raw as { skills: unknown[] }).skills
+                : Array.isArray(raw)
+                  ? raw
+                  : [];
+            return {
+              skills: listRaw.map((item, index) =>
+                metadataFromUnknown(item, input.query || `skill-${index + 1}`),
+              ),
+            } satisfies SkillSearchResult;
+          }),
+          Effect.catch((error) =>
+            Effect.succeed({
+              skills: [],
+              warning: error.message.includes("401")
+                ? "skills.sh search currently requires registry authentication, so online results are unavailable."
+                : error.message,
+            } satisfies SkillSearchResult),
+          ),
+        );
+      });
 
     const audit = (input: SkillInstallInput) =>
       Effect.gen(function* () {
@@ -521,9 +533,12 @@ export const SkillRuntimeLive = Layer.effect(
           });
         }
 
+        const settings = yield* settingsService.getSettings;
+        const apiKey = settings.skills.skillsShApiKey;
         return yield* fetchJson(
           httpClient,
           `${SKILLS_SH_BASE_URL}/api/v1/skills/audit/${encodeURIComponent(input.id)}`,
+          apiKey || undefined,
         ).pipe(
           Effect.map((raw) => {
             const record = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
@@ -560,10 +575,12 @@ export const SkillRuntimeLive = Layer.effect(
           return yield* Effect.fail(skillsShError("Only skills.sh installation is supported."));
         }
         const settings = yield* settingsService.getSettings;
+        const apiKey = settings.skills.skillsShApiKey;
         const installPath = resolveInstallPath(path, config, settings.skills.installPath);
         const raw = yield* fetchJson(
           httpClient,
           `${SKILLS_SH_BASE_URL}/api/v1/skills/${encodeURIComponent(input.id)}`,
+          apiKey || undefined,
         );
         const skill = metadataFromUnknown(raw, input.id);
         const skillPath = path.join(installPath, skill.id);
