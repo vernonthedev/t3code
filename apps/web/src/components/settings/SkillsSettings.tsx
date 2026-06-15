@@ -190,7 +190,11 @@ function SkillRow({
                 <RefreshCwIcon />
                 Update skill
               </MenuItem>
-              <MenuItem variant="destructive" onClick={onRemove}>
+              <MenuItem
+                disabled={skill.provider === "builtin"}
+                variant="destructive"
+                onClick={onRemove}
+              >
                 <Trash2Icon />
                 Remove skill
               </MenuItem>
