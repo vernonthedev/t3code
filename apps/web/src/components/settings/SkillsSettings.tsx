@@ -688,6 +688,7 @@ export function CreateSkillSettingsPanel() {
     permissions: "",
   });
   const [busy, setBusy] = useState(false);
+  const parsedPermissions = permissionsFromText(newSkill.permissions);
 
   const handleCreate = useCallback(async () => {
     try {
@@ -758,6 +759,7 @@ export function CreateSkillSettingsPanel() {
         <SettingsRow
           title="Permissions"
           description="Comma-separated permissions requested by this skill."
+          status={<PermissionList permissions={parsedPermissions} />}
           control={
             <Input
               value={newSkill.permissions}
