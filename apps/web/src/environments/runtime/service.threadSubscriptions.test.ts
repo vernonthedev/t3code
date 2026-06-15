@@ -155,6 +155,16 @@ vi.mock("@t3tools/client-runtime", async (importOriginal) => {
     review: {
       getDiffPreview: vi.fn(),
     },
+    skills: {
+      list: vi.fn(),
+      search: vi.fn(),
+      audit: vi.fn(),
+      install: vi.fn(),
+      create: vi.fn(),
+      setEnabled: vi.fn(),
+      execute: vi.fn(),
+      listExecutions: vi.fn(),
+    },
     server: {
       getConfig: vi.fn(),
       refreshProviders: vi.fn(),
