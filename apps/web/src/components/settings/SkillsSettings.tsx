@@ -365,7 +365,7 @@ function ExecutionLogsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPopup className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Skill Execution Logs</DialogTitle>
+          <DialogTitle>Skill Execution Logs ({executions.length})</DialogTitle>
         </DialogHeader>
         <DialogPanel className="space-y-2">
           {executions.length === 0 ? (
