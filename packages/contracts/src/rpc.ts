@@ -125,6 +125,22 @@ import {
 } from "./server.ts";
 import { ServerSettings, ServerSettingsError, ServerSettingsPatch } from "./settings.ts";
 import {
+  SkillAuditReport,
+  SkillCreateInput,
+  SkillDefinition,
+  SkillExecuteInput,
+  SkillExecutionError,
+  SkillExecutionRecord,
+  SkillExecutionResult,
+  SkillInstallInput,
+  SkillInstallResult,
+  SkillProviderError,
+  SkillRegistrySnapshot,
+  SkillSearchInput,
+  SkillSearchResult,
+  SkillSetEnabledInput,
+} from "./skills.ts";
+import {
   SourceControlCloneRepositoryInput,
   SourceControlCloneRepositoryResult,
   SourceControlDiscoveryResult,
@@ -203,6 +219,16 @@ export const WS_METHODS = {
   serverGetProcessDiagnostics: "server.getProcessDiagnostics",
   serverGetProcessResourceHistory: "server.getProcessResourceHistory",
   serverSignalProcess: "server.signalProcess",
+
+  // Skills runtime methods
+  skillsList: "skills.list",
+  skillsSearch: "skills.search",
+  skillsAudit: "skills.audit",
+  skillsInstall: "skills.install",
+  skillsCreate: "skills.create",
+  skillsSetEnabled: "skills.setEnabled",
+  skillsExecute: "skills.execute",
+  skillsListExecutions: "skills.listExecutions",
 
   // Cloud environment methods
   cloudGetRelayClientStatus: "cloud.getRelayClientStatus",
@@ -304,6 +330,59 @@ export const WsServerGetProcessResourceHistoryRpc = Rpc.make(
 export const WsServerSignalProcessRpc = Rpc.make(WS_METHODS.serverSignalProcess, {
   payload: ServerSignalProcessInput,
   success: ServerSignalProcessResult,
+  error: EnvironmentAuthorizationError,
+});
+
+export const WsSkillsListRpc = Rpc.make(WS_METHODS.skillsList, {
+  payload: Schema.Struct({}),
+  success: SkillRegistrySnapshot,
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsSearchRpc = Rpc.make(WS_METHODS.skillsSearch, {
+  payload: SkillSearchInput,
+  success: SkillSearchResult,
+  error: Schema.Union([SkillProviderError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsAuditRpc = Rpc.make(WS_METHODS.skillsAudit, {
+  payload: SkillInstallInput,
+  success: SkillAuditReport,
+  error: Schema.Union([SkillProviderError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsInstallRpc = Rpc.make(WS_METHODS.skillsInstall, {
+  payload: SkillInstallInput,
+  success: SkillInstallResult,
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsCreateRpc = Rpc.make(WS_METHODS.skillsCreate, {
+  payload: SkillCreateInput,
+  success: SkillDefinition,
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsSetEnabledRpc = Rpc.make(WS_METHODS.skillsSetEnabled, {
+  payload: SkillSetEnabledInput,
+  success: SkillDefinition,
+  error: Schema.Union([SkillProviderError, ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+export const WsSkillsExecuteRpc = Rpc.make(WS_METHODS.skillsExecute, {
+  payload: SkillExecuteInput,
+  success: SkillExecutionResult,
+  error: Schema.Union([
+    SkillExecutionError,
+    SkillProviderError,
+    ServerSettingsError,
+    EnvironmentAuthorizationError,
+  ]),
+});
+
+export const WsSkillsListExecutionsRpc = Rpc.make(WS_METHODS.skillsListExecutions, {
+  payload: Schema.Struct({}),
+  success: Schema.Array(SkillExecutionRecord),
   error: EnvironmentAuthorizationError,
 });
 
@@ -671,6 +750,14 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerGetProcessDiagnosticsRpc,
   WsServerGetProcessResourceHistoryRpc,
   WsServerSignalProcessRpc,
+  WsSkillsListRpc,
+  WsSkillsSearchRpc,
+  WsSkillsAuditRpc,
+  WsSkillsInstallRpc,
+  WsSkillsCreateRpc,
+  WsSkillsSetEnabledRpc,
+  WsSkillsExecuteRpc,
+  WsSkillsListExecutionsRpc,
   WsCloudGetRelayClientStatusRpc,
   WsCloudInstallRelayClientRpc,
   WsSourceControlLookupRepositoryRpc,
