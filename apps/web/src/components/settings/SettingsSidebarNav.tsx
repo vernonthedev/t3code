@@ -77,7 +77,7 @@ export function SettingsSidebarNav({ pathname }: { pathname: string }) {
           <SidebarMenu>
             {SETTINGS_NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.to;
+              const isActive = pathname === item.to || pathname.startsWith(`${item.to}/`);
               return (
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
